@@ -8,6 +8,7 @@ const SignUpForm: React.FC = () => {
 
   const mutation = api.auth.register.useMutation({
     onSuccess: (data) =>  alert(`SUCCESS ,${data}`),
+    onError: ()=> alert("Email Already Registered")
     // todo : redirection 
   });
 
