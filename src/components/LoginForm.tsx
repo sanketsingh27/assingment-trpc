@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { api } from "~/utils/api";
 
 
-const SignUpForm: React.FC = () => {
+const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const mutation = api.auth.register.useMutation({
+  const mutation = api.auth.login.useMutation({
     onSuccess: (data) =>  alert(`SUCCESS ,${data}`),
     // todo : redirection 
   });
@@ -50,4 +50,4 @@ const SignUpForm: React.FC = () => {
   );
 };
 
-export default SignUpForm;
+export default LoginForm;
