@@ -5,14 +5,21 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure
-    .input(z.object({ email: z.string().email(), password: z.string() }))
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string().email(),
+        password: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-      const { email, password } = input;
+      const { email, password, name } = input;
       const hashedPassword = await hashPassword(password);
 
       const user = await ctx.db.user.create({
         data: {
           email,
+          name,
           password: hashedPassword,
         },
       });

@@ -23,7 +23,7 @@ const SignUpForm: React.FC = () => {
       return;
     }
     // Call the onLogin function passed from parent component
-    mutation.mutate({ email, password });
+    mutation.mutate({ email, password, name });
     // Clear input fields
     setEmail("");
     setPassword("");
