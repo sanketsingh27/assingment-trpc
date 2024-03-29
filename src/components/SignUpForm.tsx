@@ -6,8 +6,9 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const mutation = api.user.createUser.useMutation({
+  const mutation = api.auth.register.useMutation({
     onSuccess: (data) =>  alert(`SUCCESS ,${data}`),
+    // todo : redirection 
   });
 
   const handleSubmit = (e: React.FormEvent) => {
