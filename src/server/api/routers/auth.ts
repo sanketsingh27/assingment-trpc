@@ -17,7 +17,13 @@ export const authRouter = createTRPCRouter({
         },
       });
 
-      return user;
+      const token = generateToken({ userId: user.id });
+
+      return {
+        ...user,
+        token,
+        password: "**************",
+      };
     }),
   login: publicProcedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
