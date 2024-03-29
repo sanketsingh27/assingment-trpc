@@ -1,24 +1,23 @@
-import Image from "next/image"
 export default function Layout() {
-    return (
-            <div className="flex flex-col pb-4 bg-white">
-              <div className="flex flex-col justify-center items-end px-16 py-3 w-full text-xs bg-white text-zinc-800 max-md:px-5 max-md:max-w-full">
-                <div className="flex gap-5 pl-3.5">
-                  <div className="justify-center py-0.5 whitespace-nowrap">Help</div>
-                  <div className="justify-center py-0.5">Orders & Returns</div>
-                  <div className="justify-center p-0.5 text-right">Hi, John</div>
-                </div>
-              </div>
-              <div className="flex gap-5 items-start self-center px-5 mt-3.5 w-full max-w-[1360px] max-md:flex-wrap max-md:max-w-full">
-                <div className="flex-auto text-3xl font-bold text-black">ECOMMERCE</div>
-                <div className="flex gap-5 self-stretch my-auto text-base font-semibold text-black max-md:flex-wrap">
-                  <div className="grow">Categories</div>
-                  <div>Sale</div>
-                  <div>Clearance</div>
-                  <div>New stock</div>
-                  <div>Trending</div>
-                </div>
-                {/* <div className="flex gap-5 justify-between">
+  return (
+    <div className="flex flex-col bg-white pb-4">
+      <div className="flex w-full flex-col items-end justify-center bg-white px-16 py-3 text-xs text-zinc-800 max-md:max-w-full max-md:px-5">
+        <div className="flex gap-5 pl-3.5">
+          <div className="justify-center whitespace-nowrap py-0.5">Help</div>
+          <div className="justify-center py-0.5">Orders & Returns</div>
+          <div className="justify-center p-0.5 text-right">Hi, John</div>
+        </div>
+      </div>
+      <div className="mt-3.5 flex w-full max-w-[1360px] items-start gap-5 self-center px-5 max-md:max-w-full max-md:flex-wrap">
+        <div className="flex-auto text-3xl font-bold text-black">ECOMMERCE</div>
+        <div className="my-auto flex gap-5 self-stretch text-base font-semibold text-black max-md:flex-wrap">
+          <div className="grow">Categories</div>
+          <div>Sale</div>
+          <div>Clearance</div>
+          <div>New stock</div>
+          <div>Trending</div>
+        </div>
+        {/* <div className="flex gap-5 justify-between">
                   <Image
                   alt="icon"
                     loading="lazy"
@@ -36,7 +35,7 @@ export default function Layout() {
                     className="shrink-0 w-8 aspect-square"
                   />
                 </div> */}
-              </div>
-            </div>
-    )
-  }
+      </div>
+    </div>
+  );
+}
