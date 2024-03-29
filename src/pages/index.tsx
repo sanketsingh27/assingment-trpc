@@ -1,11 +1,19 @@
+"use client";
 import { api } from "~/utils/api";
-
-// interface categories{
-//   id: string;
-//   name: string;
-// }[];
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Perform localStorage action
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
   const { isLoading, data } = api.category.fetchCategories.useQuery();
 
   isLoading ? <h2>Categories are loading</h2> : null;

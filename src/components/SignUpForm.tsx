@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
@@ -10,7 +11,12 @@ const SignUpForm: React.FC = () => {
   const router = useRouter();
 
   const mutation = api.auth.register.useMutation({
-    onSuccess: (data) => alert(`SUCCESS ,${data}`),
+    onSuccess: (data) => {
+      //redirect to index page
+      localStorage.setItem("token", data.token);
+
+      router.push("/");
+    },
     onError: () => alert("Email Already Registered"),
     // todo : redirection
   });

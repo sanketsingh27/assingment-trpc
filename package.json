@@ -24,6 +24,7 @@
     "@trpc/react-query": "next",
     "@trpc/server": "next",
     "@types/bcrypt": "^5.0.2",
+    "@types/js-cookie": "^3.0.6",
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "next": "^14.1.3",
