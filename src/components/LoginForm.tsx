@@ -25,7 +25,10 @@ const LoginForm: React.FC = () => {
     setPassword('');
   };
 
+
   return (
+    <>
+    <main className=" bg-slate-500">
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="username">Username:</label>
@@ -47,6 +50,8 @@ const LoginForm: React.FC = () => {
       </div>
       <button type="submit">Login</button>
     </form>
+    </main>
+    </>
   );
 };
 
