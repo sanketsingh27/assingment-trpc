@@ -29,35 +29,28 @@ export default function Home() {
   }, []);
 
   // FETCH USER'S SELECTED CATEGORY
-  const fetchPreSelectedCategories = async () => {
-    if (!userId) return;
-
-    try {
-      const { data } = await api.user.getFavoriteCategory.useQuery({
-        userId,
-      });
-      setSelectedCategories((prev) => [...prev, ...data]);
-    } catch (error) {
-      console.error("Error fetching pre-selected categories:", error);
-    }
-  };
+  const { data: favoriteCategories } = api.user.getFavoriteCategory.useQuery(
+    {
+      userId,
+    },
+    {
+      initialData: [],
+    },
+  );
   useEffect(() => {
-    fetchPreSelectedCategories();
-  }, [userId]);
+    console.log("FAV category ", favoriteCategories);
+    setSelectedCategories((prev) => [...prev, ...favoriteCategories]);
+  }, [favoriteCategories]);
 
   // FETCH ALL CATEGORY
-  const fetchAllCategories = async () => {
-    if (!userId) return;
-    try {
-      const { data } = await api.category.fetchCategories.useQuery();
-      setCategory((prev) => [...prev, ...data]);
-    } catch (error) {
-      console.error("Error fetching all categories:", error);
-    }
-  };
+
+  const { data: allCategory } = api.category.fetchCategories.useQuery(
+    {},
+    { initialData: [] },
+  );
   useEffect(() => {
-    fetchAllCategories();
-  }, [userId]);
+    setCategory((prev) => [...prev, ...allCategory]);
+  }, [allCategory]);
 
   // Add Favorite Mutation
   const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
