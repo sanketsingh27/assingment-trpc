@@ -3,12 +3,14 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
+import ReactPaginate from "react-paginate";
+import Pagination from "~/components/Pagination";
 
 export default function Home() {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [userId, setUserId] = useState(null);
-  const [category, setCategory] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
 
   // CHECK TOKEN AND REDIRECT
   useEffect(() => {
@@ -38,19 +40,14 @@ export default function Home() {
     },
   );
   useEffect(() => {
-    console.log("FAV category ", favoriteCategories);
     setSelectedCategories((prev) => [...prev, ...favoriteCategories]);
   }, [favoriteCategories]);
 
   // FETCH ALL CATEGORY
-
-  const { data: allCategory } = api.category.fetchCategories.useQuery(
-    {},
+  const { data: categories } = api.category.fetchCategories.useQuery(
+    { pageNo: pageNumber },
     { initialData: [] },
   );
-  useEffect(() => {
-    setCategory((prev) => [...prev, ...allCategory]);
-  }, [allCategory]);
 
   // Add Favorite Mutation
   const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
@@ -90,6 +87,8 @@ export default function Home() {
     });
   };
 
+  const handlePageClick = () => {};
+
   return (
     <Layout>
       <div className=" m-auto mt-4 flex max-h-[550px] max-w-md	 flex-col  rounded-3xl border border-solid border-stone-300 bg-white px-12 pb-12 pt-8 text-base max-md:px-5">
@@ -102,7 +101,7 @@ export default function Home() {
         </div>
 
         <div className=" h-full overflow-scroll scroll-smooth">
-          {category?.map(({ name, id }) => {
+          {categories?.map(({ name, id }) => {
             return (
               <label key={id} className="flex items-center space-x-2">
                 <input
@@ -116,6 +115,13 @@ export default function Home() {
             );
           })}
         </div>
+
+        {/* PAGINATION  */}
+        <Pagination
+          currentPage={pageNumber}
+          totalPages={17}
+          onPageChange={setPageNumber}
+        />
       </div>
     </Layout>
   );
