@@ -43,7 +43,15 @@ const OTP: React.FC = () => {
       <div className="self-center text-sm font-normal  text-black">
         anu***@gmail.com
       </div>
-
+      <div className="flex justify-center">
+        <input
+          type="text"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          maxLength={6} // Set maximum length to 6 digits
+          className=" h-10 w-1/2 rounded-md border border-gray-300 px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
       <button
         onClick={handleSubmit}
         className="mt-4 items-center justify-center rounded-md border border-solid border-black bg-black px-3 py-2 text-center font-medium uppercase tracking-wider text-white "

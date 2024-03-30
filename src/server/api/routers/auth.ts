@@ -3,6 +3,7 @@ import { hashPassword, comparePasswords, generateToken } from "~/utils/auth";
 import { sendLoginEmail } from "~/server/mailer";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 
 export const authRouter = createTRPCRouter({
   requestOtp: publicProcedure
@@ -21,6 +22,7 @@ export const authRouter = createTRPCRouter({
         name: z.string(),
         email: z.string().email(),
         password: z.string(),
+        otp: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -28,6 +30,9 @@ export const authRouter = createTRPCRouter({
 
       // check for static otp
       // if not match send them error
+      if (otp !== "123456") {
+        throw new TRPCError("Wrong OTP");
+      }
       const hashedPassword = await hashPassword(password);
 
       const user = await ctx.db.user.create({
