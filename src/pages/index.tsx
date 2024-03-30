@@ -8,66 +8,70 @@ export default function Home() {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [category, setCategory] = useState([]);
 
+  // CHECK TOKEN AND REDIRECT
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    }
+    const checkTokenAndRedirect = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login");
+      }
+    };
 
-    const userId = localStorage.getItem("userId");
-    setUserId(userId);
+    checkTokenAndRedirect();
   }, [router]);
 
-  const { data: preSelectedCategories } = api.user.getFavoriteCategory.useQuery(
-    {
-      userId,
-    },
-  );
-
+  // USER ID FROM LOCAL STORAGE
   useEffect(() => {
-    setSelectedCategories((prev) => [...prev, preSelectedCategories]);
+    const userIdFromStorage = localStorage.getItem("userId");
+    setUserId(userIdFromStorage);
   }, []);
 
-  // Fetching Categories
-  const { data } = api.category.fetchCategories.useQuery();
+  // FETCH USER'S SELECTED CATEGORY
+  useEffect(() => {
+    const fetchPreSelectedCategories = async () => {
+      if (!userId) return;
 
-  // Add Favorite Mutation
-  const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
-    onSuccess({ categoryId }) {
-      setSelectedCategories((prevState) => [...prevState, categoryId]);
-    },
-  });
+      try {
+        const { data } = await api.user.getFavoriteCategory.useQuery({
+          userId,
+        });
+        setSelectedCategories((prev) => [...prev, ...data]);
+      } catch (error) {
+        console.error("Error fetching pre-selected categories:", error);
+      }
+    };
 
-  // Remove Favorite Mutation
-  const removeFavoriteCategory = api.user.removeFavoriteCategory.useMutation({
-    onSuccess({ categoryId }) {
-      setSelectedCategories((prevState) =>
-        prevState.filter((id) => id !== categoryId),
-      );
-    },
-  });
+    fetchPreSelectedCategories();
+  }, [userId]);
 
-  const handleEvent = (event, categoryId) => {
-    if (event.target.checked) {
-      addFavorite(categoryId);
-    } else {
-      removeFavorite(categoryId);
+  // FETCH ALL CATEGORY
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      if (!userId) return;
+
+      try {
+        const { data } = api.category.fetchCategories.useQuery();
+
+        setCategory((prev) => [...prev, ...data]);
+      } catch (error) {
+        console.error("Error fetching pre-selected categories:", error);
+      }
+    };
+
+    fetchAllCategories();
+  }, [userId]);
+
+  const handleEvent = async (event, categoryId) => {
+    const action = event.target.checked
+      ? addFavoriteCategory
+      : removeFavoriteCategory;
+    try {
+      await action(userId, categoryId);
+    } catch (error) {
+      console.error("Error updating favorite category:", error);
     }
-  };
-
-  const addFavorite = (categoryId) => {
-    addFavoriteCategory.mutate({
-      userId: localStorage.getItem("userId"),
-      categoryId: categoryId,
-    });
-  };
-
-  const removeFavorite = (categoryId) => {
-    removeFavoriteCategory.mutate({
-      userId: localStorage.getItem("userId"),
-      categoryId: categoryId,
-    });
   };
 
   return (
@@ -82,7 +86,7 @@ export default function Home() {
         </div>
 
         <div className=" h-full overflow-scroll scroll-smooth">
-          {data?.map(({ name, id }) => {
+          {category?.map(({ name, id }) => {
             return (
               <label key={id} className="flex items-center space-x-2">
                 <input
