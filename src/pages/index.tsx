@@ -29,49 +29,72 @@ export default function Home() {
   }, []);
 
   // FETCH USER'S SELECTED CATEGORY
+  const fetchPreSelectedCategories = async () => {
+    if (!userId) return;
+
+    try {
+      const { data } = await api.user.getFavoriteCategory.useQuery({
+        userId,
+      });
+      setSelectedCategories((prev) => [...prev, ...data]);
+    } catch (error) {
+      console.error("Error fetching pre-selected categories:", error);
+    }
+  };
   useEffect(() => {
-    const fetchPreSelectedCategories = async () => {
-      if (!userId) return;
-
-      try {
-        const { data } = await api.user.getFavoriteCategory.useQuery({
-          userId,
-        });
-        setSelectedCategories((prev) => [...prev, ...data]);
-      } catch (error) {
-        console.error("Error fetching pre-selected categories:", error);
-      }
-    };
-
     fetchPreSelectedCategories();
   }, [userId]);
 
   // FETCH ALL CATEGORY
+  const fetchAllCategories = async () => {
+    if (!userId) return;
+    try {
+      const { data } = await api.category.fetchCategories.useQuery();
+      setCategory((prev) => [...prev, ...data]);
+    } catch (error) {
+      console.error("Error fetching all categories:", error);
+    }
+  };
   useEffect(() => {
-    const fetchAllCategories = async () => {
-      if (!userId) return;
-
-      try {
-        const { data } = api.category.fetchCategories.useQuery();
-
-        setCategory((prev) => [...prev, ...data]);
-      } catch (error) {
-        console.error("Error fetching pre-selected categories:", error);
-      }
-    };
-
     fetchAllCategories();
   }, [userId]);
 
-  const handleEvent = async (event, categoryId) => {
-    const action = event.target.checked
-      ? addFavoriteCategory
-      : removeFavoriteCategory;
-    try {
-      await action(userId, categoryId);
-    } catch (error) {
-      console.error("Error updating favorite category:", error);
+  // Add Favorite Mutation
+  const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
+    onSuccess({ categoryId }) {
+      setSelectedCategories((prevState) => [...prevState, categoryId]);
+    },
+  });
+
+  // Remove Favorite Mutation
+  const removeFavoriteCategory = api.user.removeFavoriteCategory.useMutation({
+    onSuccess({ categoryId }) {
+      setSelectedCategories((prevState) =>
+        prevState.filter((id) => id !== categoryId),
+      );
+    },
+  });
+
+  const handleEvent = (event, categoryId) => {
+    if (event.target.checked) {
+      addFavorite(categoryId);
+    } else {
+      removeFavorite(categoryId);
     }
+  };
+
+  const addFavorite = (categoryId) => {
+    addFavoriteCategory.mutate({
+      userId: localStorage.getItem("userId"),
+      categoryId: categoryId,
+    });
+  };
+
+  const removeFavorite = (categoryId) => {
+    removeFavoriteCategory.mutate({
+      userId: localStorage.getItem("userId"),
+      categoryId: categoryId,
+    });
   };
 
   return (
