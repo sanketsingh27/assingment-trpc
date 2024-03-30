@@ -6,35 +6,45 @@ import Layout from "~/components/Layout";
 
 export default function Home() {
   const router = useRouter();
-  const [selectedCategories, setSelectedCategories] = useState();
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    // Perform localStorage action
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     }
-    const userData = JSON.parse(localStorage.getItem("data"));
-    const selectedCategories = userData.selectedCategories.map(
-      ({ categoryId }) => categoryId,
-    );
-    setSelectedCategories(selectedCategories);
+
+    const userId = localStorage.getItem("userId");
+    setUserId(userId);
+  }, [router]);
+
+  const { data: preSelectedCategories } = api.user.getFavoriteCategory.useQuery(
+    {
+      userId,
+    },
+  );
+
+  useEffect(() => {
+    setSelectedCategories((prev) => [...prev, preSelectedCategories]);
   }, []);
 
+  // Fetching Categories
+  const { data } = api.category.fetchCategories.useQuery();
+
+  // Add Favorite Mutation
   const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
-    onSuccess() {
-      alert("Success added");
-      // make state change
-      // add new category to selected array
-      // rerendering logic
+    onSuccess({ categoryId }) {
+      setSelectedCategories((prevState) => [...prevState, categoryId]);
     },
   });
 
+  // Remove Favorite Mutation
   const removeFavoriteCategory = api.user.removeFavoriteCategory.useMutation({
-    onSuccess() {
-      alert("Success removed ");
-      // make state change
-      // rerendering logic
+    onSuccess({ categoryId }) {
+      setSelectedCategories((prevState) =>
+        prevState.filter((id) => id !== categoryId),
+      );
     },
   });
 
@@ -60,10 +70,6 @@ export default function Home() {
     });
   };
 
-  const { isLoading, data } = api.category.fetchCategories.useQuery();
-
-  isLoading ? <h2>Categories are loading</h2> : null;
-
   return (
     <Layout>
       <div className=" m-auto mt-4 flex max-h-[550px] max-w-md	 flex-col  rounded-3xl border border-solid border-stone-300 bg-white px-12 pb-12 pt-8 text-base max-md:px-5">
@@ -82,7 +88,7 @@ export default function Home() {
                 <input
                   onClick={(event) => handleEvent(event, id)}
                   type="checkbox"
-                  checked={selectedCategories.includes(id) ? true : false}
+                  checked={selectedCategories.includes(id)}
                   className="form-checkbox h-5 w-5  rounded-md checked:accent-black  "
                 />
                 <span className=" text-lg text-black">{name}</span>
