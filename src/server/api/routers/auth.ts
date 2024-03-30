@@ -41,6 +41,13 @@ export const authRouter = createTRPCRouter({
         where: {
           email: email,
         },
+        include: {
+          selectedCategories: {
+            include: {
+              category: true,
+            },
+          },
+        },
       });
 
       if (!user) {

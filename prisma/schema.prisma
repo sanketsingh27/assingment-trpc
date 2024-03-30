@@ -24,7 +24,7 @@ model Category {
   name  String
   users UserCategory[]
 
-  @@index([name])
+  @@index([id])
 }
 
 model UserCategory {

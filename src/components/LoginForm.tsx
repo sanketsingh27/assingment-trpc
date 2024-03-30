@@ -10,6 +10,7 @@ const LoginForm: React.FC = () => {
   const mutation = api.auth.login.useMutation({
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.id);
       router.push("/");
     },
   });

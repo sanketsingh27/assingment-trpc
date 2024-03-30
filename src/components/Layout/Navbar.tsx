@@ -1,4 +1,4 @@
-export default function Layout() {
+export default function Navbar() {
   return (
     <div className="flex flex-col bg-white pb-4">
       <div className="flex w-full flex-col items-end justify-center bg-white px-16 py-3 text-xs text-zinc-800 max-md:max-w-full max-md:px-5">
