@@ -1,9 +1,20 @@
 import { z } from "zod";
 import { hashPassword, comparePasswords, generateToken } from "~/utils/auth";
+import { sendLoginEmail } from "~/server/mailer";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const authRouter = createTRPCRouter({
+  requestOtp: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ input }) => {
+      //send email
+      const { email } = input;
+      sendLoginEmail({
+        email,
+      });
+      return true;
+    }),
   register: publicProcedure
     .input(
       z.object({
@@ -13,7 +24,10 @@ export const authRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { email, password, name } = input;
+      const { email, password, name, otp } = input;
+
+      // check for static otp
+      // if not match send them error
       const hashedPassword = await hashPassword(password);
 
       const user = await ctx.db.user.create({

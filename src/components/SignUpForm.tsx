@@ -10,15 +10,19 @@ const SignUpForm: React.FC = () => {
 
   const router = useRouter();
 
-  const mutation = api.auth.register.useMutation({
-    onSuccess: (data) => {
+  const mutation = api.auth.requestOtp.useMutation({
+    onSuccess: () => {
       //redirect to index page
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.id);
-
-      router.push("/");
+      localStorage.setItem(
+        "userDetails",
+        JSON.stringify({ email, password, name }),
+      );
+      setEmail("");
+      setPassword("");
+      setName("");
+      router.push("/otp");
     },
-    onError: () => alert("Email Already Registered"),
+    onError: (err) => alert("INternal server error "),
     // todo : redirection
   });
 
@@ -29,12 +33,9 @@ const SignUpForm: React.FC = () => {
       alert("Please fill in all fields");
       return;
     }
-    // Call the onLogin function passed from parent component
-    mutation.mutate({ email, password, name });
-    // Clear input fields
-    setEmail("");
-    setPassword("");
-    setName("");
+
+    // Call the request otp
+    mutation.mutate({ email });
   };
 
   return (
