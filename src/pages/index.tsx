@@ -1,11 +1,12 @@
 "use client";
 import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
 
 export default function Home() {
   const router = useRouter();
+  const [selectedCategories, setSelectedCategories] = useState();
 
   useEffect(() => {
     // Perform localStorage action
@@ -13,12 +14,18 @@ export default function Home() {
     if (!token) {
       router.push("/login");
     }
+    const userData = JSON.parse(localStorage.getItem("data"));
+    const selectedCategories = userData.selectedCategories.map(
+      ({ categoryId }) => categoryId,
+    );
+    setSelectedCategories(selectedCategories);
   }, []);
 
   const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
     onSuccess() {
       alert("Success added");
       // make state change
+      // add new category to selected array
       // rerendering logic
     },
   });
@@ -31,25 +38,25 @@ export default function Home() {
     },
   });
 
-  const handleEvent = (event) => {
+  const handleEvent = (event, categoryId) => {
     if (event.target.checked) {
-      addFavorite();
+      addFavorite(categoryId);
     } else {
-      removeFavorite();
+      removeFavorite(categoryId);
     }
   };
 
-  const addFavorite = () => {
+  const addFavorite = (categoryId) => {
     addFavoriteCategory.mutate({
       userId: localStorage.getItem("userId"),
-      categoryId: id,
+      categoryId: categoryId,
     });
   };
 
-  const removeFavorite = () => {
+  const removeFavorite = (categoryId) => {
     removeFavoriteCategory.mutate({
       userId: localStorage.getItem("userId"),
-      categoryId: id,
+      categoryId: categoryId,
     });
   };
 
@@ -71,13 +78,11 @@ export default function Home() {
         <div className=" h-full overflow-scroll scroll-smooth">
           {data?.map(({ name, id }) => {
             return (
-              <label
-                onClick={handleEvent}
-                key={id}
-                className="flex items-center space-x-2"
-              >
+              <label key={id} className="flex items-center space-x-2">
                 <input
+                  onClick={(event) => handleEvent(event, id)}
                   type="checkbox"
+                  checked={selectedCategories.includes(id) ? true : false}
                   className="form-checkbox h-5 w-5  rounded-md checked:accent-black  "
                 />
                 <span className=" text-lg text-black">{name}</span>
