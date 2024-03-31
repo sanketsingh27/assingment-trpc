@@ -1,6 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { env } from "~/env";
 
 // Set a secret key for JWT signing
 

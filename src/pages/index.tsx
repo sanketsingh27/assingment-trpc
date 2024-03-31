@@ -9,7 +9,7 @@ import Pagination from "~/components/Pagination";
 export default function Home() {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
 
   // CHECK TOKEN AND REDIRECT
