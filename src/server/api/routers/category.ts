@@ -1,8 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 
 export const categoryRouter = createTRPCRouter({
-  fetchCategories: publicProcedure
+  fetchCategories: protectedProcedure
     .input(
       z.object({
         pageNo: z.number().min(1).default(1),

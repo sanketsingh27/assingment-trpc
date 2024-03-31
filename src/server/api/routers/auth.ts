@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { hashPassword, comparePasswords, generateToken } from "~/utils/auth";
+import { serialize } from "cookie";
 import { sendLoginEmail } from "~/server/mailer";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { TRPCError } from "@trpc/server";
 
 export const authRouter = createTRPCRouter({
   requestOtp: publicProcedure
@@ -31,7 +31,7 @@ export const authRouter = createTRPCRouter({
       // check for static otp
       // if not match send them error
       if (otp !== "123456") {
-        throw new TRPCError("Wrong OTP");
+        throw new Error("Wrong OTP");
       }
       const hashedPassword = await hashPassword(password);
 
@@ -44,6 +44,10 @@ export const authRouter = createTRPCRouter({
       });
 
       const token = generateToken({ userId: user.id });
+
+      ctx.res.setHeader("Set-Cookie", serialize("jwt", token, { path: "/" }), {
+        httpOnly: true,
+      });
 
       return {
         ...user,

@@ -17,7 +17,7 @@ const OTP: React.FC = () => {
       setOtp("");
       router.push("/");
     },
-    onError: () => alert("OTP did not match"),
+    onError: ({ message }) => alert(message),
   });
 
   const handleSubmit = (e: React.FormEvent) => {
