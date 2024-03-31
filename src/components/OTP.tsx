@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
 
 const OTP: React.FC = () => {
-  const [otp, setOtp] = useState(null);
+  const [otp, setOtp] = useState("");
 
   const router = useRouter();
 
@@ -12,7 +12,7 @@ const OTP: React.FC = () => {
     onSuccess: (data) => {
       //redirect to index page
       localStorage.setItem("token", data.token);
-      setOtp(null);
+      setOtp("");
       router.push("/");
     },
     onError: ({ message }) => alert(message),
