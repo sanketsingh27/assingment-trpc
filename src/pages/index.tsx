@@ -3,7 +3,7 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
-import ReactPaginate from "react-paginate";
+
 import Pagination from "~/components/Pagination";
 
 export default function Home() {
@@ -44,10 +44,17 @@ export default function Home() {
   }, [favoriteCategories]);
 
   // FETCH ALL CATEGORY
-  const { data: categories } = api.category.fetchCategories.useQuery(
-    { pageNo: pageNumber },
-    { initialData: [] },
-  );
+  const { data: categories, error: fetchAllCategoriesError } =
+    api.category.fetchCategories.useQuery(
+      { pageNo: pageNumber },
+      { initialData: [] },
+    );
+
+  useEffect(() => {
+    if (fetchAllCategoriesError?.data?.code === "UNAUTHORIZED") {
+      router.push("/login");
+    }
+  }, [fetchAllCategoriesError, router]);
 
   // Add Favorite Mutation
   const addFavoriteCategory = api.user.addFavoriteCategory.useMutation({
@@ -86,8 +93,6 @@ export default function Home() {
       categoryId: categoryId,
     });
   };
-
-  const handlePageClick = () => {};
 
   return (
     <Layout>
