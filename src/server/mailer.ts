@@ -19,8 +19,6 @@ export async function sendLoginEmail({ email }: { email: string }) {
     text: " your secure email password is 123456 ",
   };
 
-  console.log("MAil values ", mailOptions);
-
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error("Error sending email: ", error);

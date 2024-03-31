@@ -9,7 +9,10 @@ import { parse } from "cookie";
  * need to use are documented accordingly near the end.
  */
 import { TRPCError, initTRPC } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import {
+  type NextApiRequest,
+  type CreateNextContextOptions,
+} from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -42,23 +45,19 @@ export const createCallerFactory = t.createCallerFactory;
 
 export const createTRPCRouter = t.router;
 
-const isAuthenticated = async (req) => {
+const isAuthenticated = async (req: NextApiRequest) => {
   const cookies = parse(req?.headers?.cookie ?? "");
   const token = cookies.jwt;
 
   if (!token) {
     return null;
   }
-
   const decoded = verifyToken(token);
+  let user;
 
-  console.log("Decoded == === ", decoded);
-
-  if (!decoded) {
-    return null;
+  if (decoded && typeof decoded === "object" && "userId" in decoded) {
+    user = await getUserFromDatabase(decoded.userId);
   }
-
-  const user = await getUserFromDatabase(decoded.userId);
 
   return user;
 };

@@ -3,6 +3,15 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
 
+interface UserDetails {
+  email: string;
+  id: string;
+  name: string;
+  password: string;
+  selectedCategories: string[];
+  token: string;
+}
+
 const OTP: React.FC = () => {
   const [otp, setOtp] = useState("");
 
@@ -20,12 +29,15 @@ const OTP: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const userDetailsString = localStorage.getItem("userDetails");
-    const userDetails = userDetailsString
+    const userDetailsString: string | null =
+      localStorage.getItem("userDetails");
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const userDetails: UserDetails | null = userDetailsString
       ? JSON.parse(userDetailsString)
       : null;
 
-    const { email, password, name } = userDetails;
+    const { email, password, name } = userDetails!;
     // Call apt
     mutation.mutate({ email, password, name, otp });
   };

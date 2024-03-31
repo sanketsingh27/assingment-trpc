@@ -22,7 +22,7 @@ const SignUpForm: React.FC = () => {
       setName("");
       router.push("/otp");
     },
-    onError: (err) => alert("INternal server error "),
+    onError: () => alert("Internal server error "),
     // todo : redirection
   });
 

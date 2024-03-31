@@ -8,7 +8,7 @@ import Pagination from "~/components/Pagination";
 
 export default function Home() {
   const router = useRouter();
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [userId, setUserId] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
 
@@ -72,24 +72,28 @@ export default function Home() {
     },
   });
 
-  const handleEvent = (event, categoryId) => {
-    if (event.target.checked) {
+  const handleEvent = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    categoryId: string,
+  ) => {
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
       addFavorite(categoryId);
     } else {
       removeFavorite(categoryId);
     }
   };
 
-  const addFavorite = (categoryId) => {
+  const addFavorite = (categoryId: string) => {
     addFavoriteCategory.mutate({
-      userId: localStorage.getItem("userId"),
+      userId: localStorage.getItem("userId") ?? "",
       categoryId: categoryId,
     });
   };
 
-  const removeFavorite = (categoryId) => {
+  const removeFavorite = (categoryId: string) => {
     removeFavoriteCategory.mutate({
-      userId: localStorage.getItem("userId"),
+      userId: localStorage.getItem("userId") ?? "",
       categoryId: categoryId,
     });
   };
@@ -110,7 +114,7 @@ export default function Home() {
             return (
               <label key={id} className="flex items-center space-x-2">
                 <input
-                  onClick={(event) => handleEvent(event, id)}
+                  onChange={(event) => handleEvent(event, id)}
                   type="checkbox"
                   checked={selectedCategories.includes(id)}
                   className="form-checkbox h-5 w-5  rounded-md checked:accent-black  "

@@ -5,6 +5,7 @@ import { setCookie } from "~/utils/cookie";
 import { sendLoginEmail } from "~/server/mailer";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 
 export const authRouter = createTRPCRouter({
   requestOtp: publicProcedure
@@ -12,9 +13,16 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       //send email
       const { email } = input;
-      sendLoginEmail({
-        email,
-      });
+      try {
+        await sendLoginEmail({
+          email,
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "unable to send email",
+        });
+      }
       return true;
     }),
   register: publicProcedure
