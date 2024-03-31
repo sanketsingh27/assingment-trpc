@@ -26,7 +26,7 @@ export default function Home() {
 
   // USER ID FROM LOCAL STORAGE
   useEffect(() => {
-    const userIdFromStorage = localStorage.getItem("userId");
+    const userIdFromStorage = localStorage.getItem("userId") ?? "";
     setUserId(userIdFromStorage);
   }, []);
 
