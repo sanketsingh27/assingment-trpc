@@ -12,7 +12,7 @@ const OTP: React.FC = () => {
     onSuccess: (data) => {
       //redirect to index page
       localStorage.setItem("token", data.token);
-      setOtp("");
+      setOtp(null);
       router.push("/");
     },
     onError: ({ message }) => alert(message),
