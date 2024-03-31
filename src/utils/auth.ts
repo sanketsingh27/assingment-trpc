@@ -1,8 +1,8 @@
 import { sign, verify } from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { env } from "~/env";
 
 // Set a secret key for JWT signing
-const SECRET_KEY = "your-secret-key";
 
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
@@ -17,12 +17,12 @@ export const comparePasswords = async (
 };
 
 export const generateToken = (payload: object) => {
-  return sign(payload, SECRET_KEY, { expiresIn: "1h" });
+  return sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
 };
 
 export const verifyToken = (token: string) => {
   try {
-    const decoded = verify(token, SECRET_KEY);
+    const decoded = verify(token, process.env.SECRET_KEY);
     return decoded;
   } catch (err) {
     return null;
