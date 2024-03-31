@@ -52,6 +52,8 @@ const isAuthenticated = async (req) => {
 
   const decoded = verifyToken(token);
 
+  console.log("Decoded == === ", decoded);
+
   if (!decoded) {
     return null;
   }
@@ -62,11 +64,14 @@ const isAuthenticated = async (req) => {
 };
 
 export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
-  const user = await isAuthenticated(_opts?.req);
+  const { req, res } = _opts;
+  const user = await isAuthenticated(req);
 
   return {
     ...createInnerTRPCContext({}),
     user,
+    req,
+    res,
   };
 };
 

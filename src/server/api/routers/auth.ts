@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { hashPassword, comparePasswords, generateToken } from "~/utils/auth";
-import { serialize } from "cookie";
+
+import { setCookie } from "~/utils/cookie";
 import { sendLoginEmail } from "~/server/mailer";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -25,11 +26,17 @@ export const authRouter = createTRPCRouter({
         otp: z.string(),
       }),
     )
+    .output(
+      z.object({
+        name: z.string(),
+        email: z.string().email(),
+        token: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const { email, password, name, otp } = input;
+      const { res } = ctx;
 
-      // check for static otp
-      // if not match send them error
       if (otp !== "123456") {
         throw new Error("Wrong OTP");
       }
@@ -45,20 +52,18 @@ export const authRouter = createTRPCRouter({
 
       const token = generateToken({ userId: user.id });
 
-      ctx.res.setHeader("Set-Cookie", serialize("jwt", token, { path: "/" }), {
-        httpOnly: true,
-      });
+      setCookie({ res, token });
 
       return {
         ...user,
         token,
-        password: "**************",
       };
     }),
   login: publicProcedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { email, password } = input;
+      const { res } = ctx;
 
       const user = await ctx.db.user.findUnique({
         where: {
@@ -84,7 +89,7 @@ export const authRouter = createTRPCRouter({
       }
 
       const token = generateToken({ userId: user.id });
-
+      setCookie({ res, token });
       return {
         ...user,
         token,
