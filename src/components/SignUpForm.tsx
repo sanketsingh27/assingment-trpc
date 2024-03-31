@@ -17,6 +17,7 @@ const SignUpForm: React.FC = () => {
         "userDetails",
         JSON.stringify({ email, password, name }),
       );
+
       setEmail("");
       setPassword("");
       setName("");

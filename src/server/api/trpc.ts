@@ -1,13 +1,6 @@
 import { getUserFromDatabase } from "~/utils/db";
 import { parse } from "cookie";
-/**
- * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
- * 1. You want to modify request context (see Part 1).
- * 2. You want to create a new middleware or type of procedure (see Part 3).
- *
- * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
- * need to use are documented accordingly near the end.
- */
+
 import { TRPCError, initTRPC } from "@trpc/server";
 import {
   type NextApiRequest,
@@ -58,7 +51,6 @@ const isAuthenticated = async (req: NextApiRequest) => {
   if (decoded && typeof decoded === "object" && "userId" in decoded) {
     user = await getUserFromDatabase(decoded.userId);
   }
-
   return user;
 };
 

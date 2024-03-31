@@ -34,13 +34,6 @@ export const authRouter = createTRPCRouter({
         otp: z.string(),
       }),
     )
-    .output(
-      z.object({
-        name: z.string(),
-        email: z.string().email(),
-        token: z.string(),
-      }),
-    )
     .mutation(async ({ ctx, input }) => {
       const { email, password, name, otp } = input;
       const { res } = ctx;
@@ -65,6 +58,7 @@ export const authRouter = createTRPCRouter({
       return {
         ...user,
         token,
+        password: "**************",
       };
     }),
   login: publicProcedure

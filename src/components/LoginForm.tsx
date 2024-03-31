@@ -9,7 +9,7 @@ const LoginForm: React.FC = () => {
 
   const mutation = api.auth.login.useMutation({
     onSuccess: (data) => {
-      localStorage.setItem("data", JSON.stringify(data));
+      console.log("DATA = = =  = ", data);
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.id);
       router.push("/");
@@ -74,7 +74,7 @@ const LoginForm: React.FC = () => {
           onClick={() => router.push("/signup")}
           className="font-medium uppercase tracking-wider text-black"
         >
-          SING UP
+          SIGN UP
         </button>
       </div>
     </div>
