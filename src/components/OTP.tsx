@@ -20,10 +20,12 @@ const OTP: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Basic validation // otp length
-    const { email, password, name } = JSON.parse(
-      localStorage.getItem("userDetails"),
-    );
+    const userDetailsString = localStorage.getItem("userDetails");
+    const userDetails = userDetailsString
+      ? JSON.parse(userDetailsString)
+      : null;
+
+    const { email, password, name } = userDetails;
     // Call apt
     mutation.mutate({ email, password, name, otp });
   };
