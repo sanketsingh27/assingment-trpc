@@ -15,8 +15,11 @@ export default function Home() {
   // CHECK TOKEN AND REDIRECT
   useEffect(() => {
     const checkTokenAndRedirect = () => {
+      console.log("checking the token");
       const token = localStorage.getItem("token");
+      console.log("TOKEN form LS =>", token);
       if (!token) {
+        console.log("Token not found ", token);
         router.push("/login");
       }
     };
