@@ -31,14 +31,17 @@ export default function Home() {
   }, []);
 
   // FETCH USER'S SELECTED CATEGORY
-  const { data: favoriteCategories } = api.user.getFavoriteCategory.useQuery(
-    {
-      userId,
-    },
-    {
-      initialData: [],
-    },
-  );
+  const { data: favoriteCategories } = userId
+    ? api.user.getFavoriteCategory.useQuery(
+        {
+          userId,
+        },
+        {
+          initialData: [],
+        },
+      )
+    : { data: [] };
+
   useEffect(() => {
     setSelectedCategories((prev) => [...prev, ...favoriteCategories]);
   }, [favoriteCategories]);
